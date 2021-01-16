@@ -2,10 +2,10 @@
 #include <stdlib.h> 
 #include <pthread.h> 
 
-#define NUMTHREADS 10 
+#define N 10 /* Dimension de la matrice et nombre de threads à démarrer */
 
-int mat[NUMTHREADS][NUMTHREADS];
-int vect[NUMTHREADS];	// vect[i] contiendra la somme des éléments de la ligne i de mat.
+int mat[N][N];
+int vect[N];	// vect[i] contiendra la somme des éléments de la ligne i de mat.
 
 
 // Fonction du thread
@@ -22,7 +22,7 @@ void sommeLigne(void *i) {
 
 
 int main (int argc, char *argv[]) { 
-	pthread_t threads[NUMTHREADS]; 
+	pthread_t threads[N]; 
 	int rc; 
 	long th; 
 	int sommeMatrice = 0;
@@ -30,18 +30,18 @@ int main (int argc, char *argv[]) {
 	srand(time(NULL));
 	
 	/* Initialisation aléatoire de la matrice matr. */
-	for (int i = 0; i < NUMTHREADS; ++i)
+	for (int i = 0; i < N; ++i)
 	{
-		for (int j = 0; j < NUMTHREADS; ++j)
+		for (int j = 0; j < N; ++j)
 		{
 			mat[i][j] = (int) rand()%20;
 		}
 	}
 
 	printf("Matrice:\n");
-	for (int i = 0; i < NUMTHREADS; ++i)
+	for (int i = 0; i < N; ++i)
 	{
-		for (int j = 0; j < NUMTHREADS; ++j)
+		for (int j = 0; j < N; ++j)
 		{
 			printf("%d  ", mat[i][j]);
 		}
@@ -49,9 +49,9 @@ int main (int argc, char *argv[]) {
 	}
 
 	/* Calcul séquentiel de la somme des éléments de la matrice mat. */
-	for (int i = 0; i < NUMTHREADS; ++i)
+	for (int i = 0; i < N; ++i)
 	{
-		for (int j = 0; j < NUMTHREADS; ++j)
+		for (int j = 0; j < N; ++j)
 		{
 			sommeMatrice += mat[i][j];
 		}
@@ -61,7 +61,7 @@ int main (int argc, char *argv[]) {
 
 
 	/* Création et démarrage des threads */
-	for(th = 0; th < NUMTHREADS; th++){ 
+	for(th = 0; th < N; th++){ 
 		//printf("main: creation du thread %ld\n", th); 
 		rc = pthread_create(&threads[th], NULL, (void *) 	sommeLigne, (void *)th); 
 		if (rc){ 
@@ -71,13 +71,13 @@ int main (int argc, char *argv[]) {
 	} 
 
 	/* Jointure des threads */
-	for (int th = 0; th < NUMTHREADS; ++th)
+	for (int th = 0; th < N; ++th)
 	{
 		pthread_join(threads[th], NULL);
 	}
 
 	sommeMatrice = 0;
-	for (int i = 0; i < NUMTHREADS; ++i)
+	for (int i = 0; i < N; ++i)
 	{
 		sommeMatrice += vect[i];
 	}
