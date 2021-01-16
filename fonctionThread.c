@@ -1,3 +1,8 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+
+
 void fonctionThread(void){ 
 	pthread_t mon_tid; 
 	mon_tid = pthread_self(); 
